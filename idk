@@ -1,0 +1,203 @@
+
+<! DOCTYPE HTML PUBLIC "- // W3C // DTD XHTML 1.0 Transitional // EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML xmlns = "http://www.w3.org/1999/xhtml">
+<Head>
+<Title> Chat - Customer Module </ title>
+<Link type = "text / css" rail = "stylesheet in the" href = "style.css the" />
+</ Head>
+
+<Div's ID = "wrapper">
+<Div's ID = "menu">
+<P class = "Welcome"> There, in the <b> </ b> </ P>
+<P class = "logout"> <a id="exit" href="#"> please exit </a> chat </ P>
+<Div style = "clear: both"> </ div's>
+</ DIV>
+
+<Div's ID = "chatbox"> </ div's>
+
+<Form name = "post" action = "">
+<Input name = "usermsg" type = "text" ID = "usermsg" size = "63" />
+<Input name = "submitmsg" type = "submit" ID = "submitmsg" value = "Submit" />
+</ Form>
+</ DIV>
+<Script type = "text / javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"> </ script>
+<Script type = "text / javascript">
+// JQuery document
+$ (Document) .ready (function () {
+
+});
+</ Script>
+</ Body>
+</ HTML>
+
+/ * CSS Document * /
+Body {
+Font: 12px Arial;
+Color: # 222;
+Text-align: center;
+Padding: 35px;}
+
+Form, P, duration {
+Margin: 0;
+Padding: 0;}
+
+Input {font: 12px Arial;}
+
+A {
+Color: # 0000ff's;
+Text-decoration: none;}
+
+A: hover {text-decoration: underline;}
+
+#wrapper, #loginform {
+Margin: 0 auto;
+Padding-bottom: 25px;
+Background: # EBF4FB;
+Width: 504px;
+Border: 1px solid # ACD8F0;}
+
+#loginform {padding-top: 18px;}
+
+#loginform P {margin: 5px;}
+
+#chatbox {
+Text-align: right;
+Margin: 0 auto;
+Margin-bottom: 25px;
+Padding: 10px;
+Background: #fff;
+Height: 270px;
+Width: 430px;
+Border: 1px solid # ACD8F0;
+Overflow: auto;}
+
+#usermsg {
+Width: 395px;
+Border: 1px solid # ACD8F0;}
+
+# The {width: 60px;}
+
+.error {color: # FF0000;}
+
+#menu {padding: 12.5px 25px 12.5px 25px;}
+
+.welcome {float: right;}
+
+.logout {float: right;}
+
+.msgln {margin: 0 0 2px 0;}
+
+
+<?
+Property ();
+
+Function loginForm () {
+'Echo
+<Div's ID = "loginform">
+<Form action = "index.php the" method = "post">
+<P> Please enter your name to proceed: </ P>
+<= "Name" label> Name: </ label>
+<Input type = "text" name = "name" ID = "name" />
+<Input type = "submit" name = ID = "Enter" "ENTER" value = "enter" />
+</ Form>
+</ DIV>
+';
+}
+
+If (a isset ($ _ POST) ['the']) {
+If ($ _ Post ['name'] = "") {
+$ _SESSION ['Name'] = stripslashes (htmlspecialchars ($ _ Post ['name']);)
+}
+Else {
+Echo '<span class = "error"> name </ span> in the type;
+}
+}
+?>
+
+
+<P class = "Welcome"> There, in the <b> <$ _SESSION php echo ['name'];?> </ B>
+
+<Script type = "text / javascript">
+// JQuery document
+$ (Document) .ready (function () {
+// If the user wants to end the session
+$ ("# Exit"). ((Click event) {
+Variable exit = confirm ("Do you really want to end the session?");
+If (exit right ==) {window.location = 'index.php logout = true';}
+});
+});
+</ Script>
+If (a isset ($ _ GET) ['out']) {
+
+// Simple message exit
+Of $ FP = fopen ("log.html", 'a');
+of fwrite ($ FP, "<div class = 'msgln'> <i> user" $ _SESSION ['name'] "has left the chat session </ i> Archive </ DIV>." ..);
+The fclose ($ FP);
+
+session_destroy ();
+Header ("Location: index.php only"); // Redirect the user
+}
+
+
+
+// If the user submits the form
+$ ("# Submitmsg"). ((Click event) {
+. Variable clientmsg = $ ("# usermsg") val ();
+$. Post ("post.php", {text: clientmsg});
+$ ("# Usermsg") attr ("value", "");
+Return false;
+});
+
+
+<?
+Property ();
+If (a isset ($ _ SESSION ['name'])) {
+$ Text = $ _POST ['text'];
+
+Of $ FP = fopen ("log.html", 'a');
+of fwrite ($ FP, "<div class = 'msgln'> (" date ("G: I have a" ....) ") <b>" $ _ SESSION ['name'] "</ b> : ". stripslashes (htmlspecialchars ($ text))" Archives </ DIV> ");
+The fclose ($ FP);
+}
+?>
+
+<Div's ID = "chatbox"> <PHP
+If (file_exists ("log.html") && File ("log.html")> 0) {
+The $ = fopen ("log.html", "R") to the handle;
+Of $ contents = fread ($ handle, file ("log.html"));
+The fclose ($ handle);
+
+Echo $ contents;
+}
+?> </ Div's>
+
+
+// Load the file containing the chat log
+{) (LoadLog work
+
+$ .ajax ({
+URL: "log.html",
+Cache: false,
+Success: function (HTML) {
+. $ ("# Chatbox") HTML (HTML); // Enter the chat log in #chatbox div
+},
+});
+}
+
+
+// Load the file containing the chat log
+{) (LoadLog work
+Variable oldscrollHeight = $ ("# chatbox") attr ("scrollHeight") - 20 .; // Scroll height before application
+$ .ajax ({
+URL: "log.html",
+Cache: false,
+Success: function (HTML) {
+. $ ("# Chatbox") HTML (HTML); // Enter the chat log in #chatbox div
+
+// Auto-scroll
+Variable newscrollHeight = $ ("# chatbox") attr ("scrollHeight") - 20 .; height after application // Scroll
+If (newscrollHeight> oldscrollHeight) {
+$ ("# Chatbox") animate ({scrollTop: newscrollHeight}, 'normal'); div to the bottom // Autoscroll
+}
+},
+});
+}
